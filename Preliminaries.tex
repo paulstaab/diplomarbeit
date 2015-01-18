@@ -1,0 +1,298 @@
+\chapter{Preliminaries}
+The mathematical modeling of Muller's ratchet is typically realised as a Wright-Fisher model 
+with countable infinite different (geno-)types. Hence, it is a Fleming-Viot process that takes
+values in the space of probability measure $\mathcal{P}(\N)$ on the natural numbers $\N = \{
+0,1,2,\ldots \}$. We will often refer to this space as the infinite dimensional simplex $\Simplex$, defined as
+\[
+\Simplex := \left\{ (x_0, x_1, \ldots) \in [0,1]^\N : \sum_{i \in \N} x_i = 1
+\right\}.
+\]
+The identification of both spaces is made via the one-to-one relationship
+\[
+\sum_{i \in \N} p_i \delta_{i} \mapsto (p_i)_{i \in \N},
+\]
+where $\delta_i$ denotes the Dirac measure on $i$ and $p_i$ is the corresponding point weight.
+We start by deriving some necessary topological preliminaries about the
+simplex $\Simplex$.
+
+\begin{Notation}
+Throughout this manuscript we will denote vectors $\Vector{x} \in \Simplex$ with an underline and
+will refer to its $i$-th coordinate $x_i$ with a subscript $i$. 
+\end{Notation}
+
+\noindent 
+At first we show that $\Simplex$ is complete and separable. Therefore, we equip $\N$ with the
+discrete metric \[ d_\N(n,m) =
+\left\{
+\begin{array}{ll}
+0 & \text{if } n = m, \\
+1 & \text{otherwise.}
+\end{array}
+\right.
+\]
+Thus $\N$ becomes complete and separable. It follows from standard theory that
+$\Simplex$ with Prohorov metric $d_P$ is complete and separable as well.
+Moreover, we can explicitly calculate $d_P$ in this case.
+
+\begin{Lemma}
+The Prohorov metric on $\Simplex$ is equal to the total variation metric. That is, 
+for $\Vector{x}, \Vector{y} \in \Simplex$,
+\[
+d_P\left( \Vector{x}, \Vector{y} \right)
+= \sum_{i \in \N}\frac{|x_i - y_i|}{2}.
+\]
+\end{Lemma}
+\begin{proof}
+Let $\Vector{x}, \Vector{y} \in \Simplex$. For a given set $F \subset \N$ denote
+its open $\varepsilon$-hull with
+\[
+F^\varepsilon = \{ n \in \N : d_\N(n,m) < \varepsilon \quad \text{for a } m \in F \}.
+\]
+As $F^\varepsilon = F$ for $\varepsilon \leq 1$, we have
+\begin{align*}
+d_P\left( \Vector{x}, \Vector{y} \right)
+&:= \inf \{ \varepsilon > 0 :
+\sum_{i \in \N} x_i \delta_i(F)
+\leq  \sum_{i \in \N} y_i \delta_i(F^\varepsilon)+\varepsilon
+\quad \text{for all } F \subset \N
+\} \\
+&= \inf \{ \varepsilon > 0 :
+\sum_{i \in \N} (x_i - y_i) \delta_i(F)
+\leq  \varepsilon
+\quad \text{for all } F \subset \N
+\}.
+\end{align*}
+The next step is to verify that 
+\begin{align*}
+d_P\left( \Vector{x}, \Vector{y} \right) 
+= \sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}}.
+\end{align*}
+For ``$\leq$'', observe that
+\begin{align*}
+\sum_{i \in \N} (x_i - y_i) \delta_i(F)
+\leq \sum_{i \in \N} (x_i - y_i) \1_{\left\{ i \in F, \, x_i > y_i \right\}}
+\leq \sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}}
+\end{align*}
+for all $F \subset \N$. For ``$\geq$'', assume that there exists
+$\tilde{\varepsilon}$ with
+\[
+\sum_{i \in \N} (x_i - y_i) \delta_i(F)
+\leq \tilde{\varepsilon}
+< \sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}}
+\]
+for all $F \subset \N$. This is a contradiction for $F = \{ i \in \N : x_i > y_i \}$.
+Now because
+\begin{align*}
+\sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}}
+= \sum_{i \in \N} (x_i - y_i) (1 - \1_{\left\{ y_i > x_i \right\}})
+= \sum_{i \in \N} (y_i - x_i) \1_{\left\{ y_i > x_i \right\}},
+\end{align*}
+we get
+\begin{align*}
+\sum_{i \in \N}|x_i - y_i| = \sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}} + (y_i -
+x_i) \1_{\left\{ y_i > x_i \right\}} = 2 \sum_{i \in \N} (x_i - y_i) \1_{\left\{ x_i > y_i \right\}} 
+\end{align*}
+\end{proof}
+
+\noindent
+We will later see that the distributions which have finite exponential moments
+are of crucial importance for Muller's ratchet, as they will turn out
+to be its `natural' state space.
+Therefore we define the subspace $\SimplexEM$ of such distributions as well as a
+metric $d_P^\circ$ that makes $\SimplexEM$ complete and separable.
+
+\begin{Definition}
+For $\xi \in \R$, we define the $\xi$-exponential moment $h_\xi$ of a discrete probability
+distribution $\Vector{x} \in \Simplex$ as 
+\[ h_\xi( \Vector{x} ) := \sum_{k=0}^\infty x_k e^{\xi k}\] 
+and define the subspace $\SimplexEM$ as
+\[ 
+\SimplexEM 
+:= \{ \Vector{x} \in \Simplex : h_\xi(\Vector{x}) < \infty \text{ for all } \xi \in \R\}.
+\]
+For $x,y \in \Simplex$ we define 
+\begin{align} \label{pre:eq:defdcirc}
+d_P^\circ(\Vector{x},\Vector{y}) 
+ := 	d_P(\Vector{x},\Vector{y}) 
+ +		\int_0^\infty e^{-t} (1 \wedge \sup_{0 \leq \xi \leq t} 
+ 			|h_\xi(\Vector{x}) - h_\xi(\Vector{y})|) \, dt.
+\end{align}
+\end{Definition}  
+
+\noindent
+The idea to use $d_P^\circ$ is taken from \citet{ethier_fleming-viot_2000}. The next Lemma
+shows that $(\SimplexEM, d_P^\circ)$ is indeed Polish.
+
+\begin{Lemma}{\ } \label{pre:l:poln} 
+\begin{enumerate}
+\item $d_P^\circ$ is a metric on $\SimplexEM$.
+\item Let $\Vector{x} \in \Simplex$ and $\Vector{x}^1,\Vector{x}^2,\ldots \in
+\SimplexEM$. Then $d_P^\circ(\Vector{x},\Vector{x}^n) \to 0$ iff $d_P(\Vector{x},\Vector{x}^n) \to 0$ and $\sup_n
+h_\xi(\Vector{x}^n) < \infty$ for all $\xi \geq 0$.
+\item The metric space $(\SimplexEM, d_P^\circ)$ is complete and separable.
+\end{enumerate}
+\end{Lemma}
+
+\begin{proof}
+1. This is obvious.
+
+\noindent
+2. For ``$\Rightarrow$'', $d_P(\Vector{x},\Vector{x}^n) \to 0$ follows directly as both summands in
+\eqref{pre:eq:defdcirc} are non-negative. Assume that $\sup_n
+h_\xi(\Vector{x}^n) = \infty$ for some $\xi \in \R$. Then there exists a
+subsequence $\Vector{x}^{n_k}$ with $|h_\xi(\Vector{x}) - h_\xi(\Vector{x}^{n_k})| \geq 1 $ as $h_\xi(\Vector{x})$ is finite. Hence
+\[ d_P^\circ(\Vector{x},\Vector{x}^{n_k}) \geq \int_\xi^\infty e^{-t} dt > 0, \]
+which is a contradiction to $d_P^\circ(\Vector{x},\Vector{x}^{n}) \to 0$.
+
+\noindent
+For ``$\Leftarrow$'', notice that $h_\xi(\Vector{x})$ is the composition of a power series with 
+$e^\xi$ and therefore is continuous in $\xi$ for $\Vector{x} \in
+\SimplexEM$. Hence it suffices to show that $h_\xi(\Vector{x}^n) \to h_\xi(\Vector{x})$ as $n \to \infty$ for all $\xi \geq 0$. So
+let $\varepsilon > 0$. We first show that there is an $N$ such that 
+$\sup_n \sum_{k=N}^\infty x_k^n e^{\xi k} < \varepsilon$. Otherwise for all $N$ there would be an
+$n$ with $\sum_{k=N}^\infty x_k^n e^{\xi k} \geq \varepsilon$. As
+\[
+h_{\xi+1}(\Vector{x}^n) 
+\geq \sum_{k=N}^\infty x_k^n e^{(\xi+1)k} 
+\geq e^N \sum_{k=N}^\infty x_k^n e^{\xi k} 
+\geq e^N
+\xrightarrow{N\to\infty} \infty \]
+that would be a contradiction to $sup_n h_{\xi+1}(\Vector x^n) < \infty$. Hence we have as well
+$$ \sup_n \sum_{k=N}^\infty x_k e^{\xi k} < \varepsilon .$$  
+As $d_P(\Vector{x},\Vector{x}^n)
+\to 0$, we have
+\[ \lim_{n\to\infty}| h_\xi(\Vector x^n) - h_\xi(\Vector x)| 
+\leq \lim_{n\to\infty} \sum_{k=0}^{N-1} |x_k^n - x_k| e^{\xi k} + \sum_{k=N}^\infty
+      x_k^n e^{\xi k} + \sum_{k=N}^\infty x_k e^{\xi k} 
+< 2 \varepsilon. \]
+
+\noindent 
+3.  For separability, note that every $\Vector{x} \in \SimplexEM$ can be approximated by
+probability vectors with entries in $\Q$ and only finitely many non-zero entries. 
+For completeness, take a Cauchy-sequence $\underline x^1, \underline x^2,...$ with respect to
+$d_{P}^\circ$. Since the sequence is also Cauchy with respect to the complete metric $d_{P}$, there
+is $\Vector{x} \in \Simplex$ with $d_{P}(\underline x^n, \underline x) \xrightarrow{n\to\infty} 0$.
+Moreover, $(h_\xi(\Vector x^n))_{n=1,2,...}$ is Cauchy in $\R_+$ by construction, so
+$\sup_n h_\xi(\Vector x)<\infty$ and so $d_{P}^\circ(\Vector x^n,\Vector x) \to 0$ as $n \to\infty$ by
+1.
+\end{proof}
+
+\noindent
+We now turn to a certain class of functions on $\Simplex$, which we will later need as a
+domain for the generator when we define Muller's ratchet via a martingale
+problem.
+
+\begin{Definition}{\ } \label{pre:d:F}
+\begin{enumerate}
+\item For a complete and separable metric space $(E,r)$, we denote the class of measurable 
+functions from $E$ to $\R$ with $\FM{E}$ and the class of bounded functions in
+$\FM{E}$ with $\FB{E}$. Furthermore, we say a function $f \in \FM{E}$ is \emph{exponentially bounded} if there
+exist constants $C,\xi > 0$ such that 
+\begin{align} \label{pre:eq:bm} |f(x)| < C e^{\xi x} \quad \text{for all } x \in E. \end{align}
+We denote the class of such functions with $\FBEM{E}$.
+  
+\item
+A class of functions $\mathcal{F} \subseteq \FM{E}$ is said to be an \emph{algebra}, if $1 \in
+\mathcal{F}$ and for all $\alpha,\beta \in E$ and $f,g \in \mathcal{F}$ also $\alpha f + \beta g \in
+\mathcal{F}$ and $fg \in \mathcal{F}$. We denote the algebra
+generated by a set $\mathcal{F} \subseteq \FM{E}$ with $\mathcal{A}(\mathcal{F})$ .
+
+\item
+For $\varphi_1,\ldots,\varphi_n \in \FM{\N}$ we define  
+$f_{\varphi_1,\ldots,\varphi_n}: \R^{\N} \to \R$ by 
+\[ f_{\varphi_1,\ldots,\varphi_n}(\Vector{x}) := \SProd{\Vector{x}}{\varphi_1} \cdots
+\SProd{\Vector{x}}{\varphi_n} \quad \text{with} \quad \SProd{\Vector{x}}{\varphi_i}
+:= \sum_{k \in \N} x_k \varphi_i(k). \]
+Talking about $f_{\varphi_1,\ldots,\varphi_n}$ as functions on $\Simplex$ or $\SimplexEM$, we
+canonically refer to the restrictions of $f_{\varphi_1,\ldots,\varphi_n}$ to
+those spaces.
+
+\item
+We define the algebra $\overline{\mathcal{F}}$ on $\R^{\N}$ by
+\[ \overline{\mathcal{F}} := \mathcal{A}(\{
+f_{\varphi_1,\ldots,\varphi_n} : n \in \N, \varphi_i \in \FBEM{\N} \text{for } i=1,\ldots,n \} ).
+\]
+\end{enumerate}
+\end{Definition}
+
+\noindent
+While it is quite obvious that every $f \in \overline{\mathcal{F}}$ is continuous on
+$(\Simplex,d_P)$, it is a bit harder to see that this remains true for the restrictions to
+$(\SimplexEM,d_P^\circ)$. As this will be important later, we state the following
+Lemma.
+
+\begin{Lemma}\label{pre:l:conti}
+Every $f\in\overline{\mathcal F}$ is continuous on $\SimplexEM$ 
+with respect to the topology generated by the metric $d_{P}^\circ$.
+\end{Lemma}
+
+\begin{proof}
+It suffices to show the assertion for the function $\SProd{\cdot}{\varphi}$ with 
+$0 \leq \varphi \in \FBEM{\N}$. Let $C$ and $\xi$ be the ones from
+\eqref{pre:eq:bm} and $\underline x, \underline x^1, \underline x^2,...\in\mathbb S^\circ$ with 
+$r^\circ_{TV}(\underline x^n, \underline x) \xrightarrow{n\to\infty} 0$. 
+Then, by the definition of $d_{P}^\circ$, 
+$\sum_{k=0}^\infty x_k^n C e^{\xi k} \xrightarrow{n\to\infty} \sum_{k=0}^\infty x_k C
+e^{\xi k}$. 
+Thus,
+\begin{align*}
+\sum_{k=0}^\infty x_k^n \varphi(k) 
+= \int_0^\infty \sum_{k=0}^\infty \1_{\{\varphi(k)>t\}} x_k^n dt
+\xrightarrow{n\to\infty} \int_0^\infty \sum_{k=0}^\infty \1_{\{\varphi(k)>t\}} x_k dt 
+= \sum_{k=0}^\infty x_k \varphi(k)
+\end{align*}
+by Fubini and dominated convergence, \citep[Theorem~1.21]{kallenberg_foundations_1997}, since
+$d_{P}$ metrizes weak convergence on $\mathcal P(\N)$.
+\end{proof}
+
+%     \begin{Lemma}\label{l:a3}
+%       For every $f\in\overline{\mathcal F}$ there are
+%       $f_1,f_2,...\in\mathcal F$ such that
+%       $f_n\xrightarrow{n\to\infty} f$ pointwise in $\mathbb S^\circ$
+%       and such that $|f_n|\leq f$.
+%     \end{Lemma}
+% 
+%     \begin{proof}
+%       Without loss of generality we can assume that $f(\underline x) =
+%       \sum_{k=0}^\infty x_k \varphi(k)$ with $\varphi\geq 0$ and
+%       $\varphi \leq C e^{\xi \cdot}$ for some $ C>0, \xi\geq 0$. We
+%       let $f_n(\underline x) := \sum_{k=0}^n x_k \varphi(k) \in
+%       \mathcal F$. Then, $|f_n|\leq |f|$. Let $\underline x\in\mathbb
+%       S^\circ$. Then, for $\varepsilon>0$ there is $m\in\mathbb N$
+%       with $\sum_{k={m+1}}^\infty x_k C e^{\xi k}<\varepsilon$. Hence,
+%       for $n\geq m$,
+%       $$ |f(\underline x) - f_n(\underline x)| \leq \sum_{k=m+1}^\infty x_k \varphi(k) \leq 
+%       \sum_{k=m+1}^\infty x_k C e^{\xi k} < \varepsilon.$$ The assertion
+%       follows.
+%     \end{proof}
+
+\noindent
+Finally, we will need another criteria under which continuous functions on $(\Simplex,d_P)$ are
+also continuous on $(\SimplexEM,d_p^\circ)$.  
+
+\begin{Lemma}\label{pre:l:conti_paths}
+Let $t\mapsto \Vector{x}(t)$ take values in $\SimplexEM$,
+be continuous with respect to the topology generated by $d_{P}$
+and $\sup_{0\leq t\leq T} \sum_{k=0}^\infty x_k(t) e^{\xi
+k}<\infty$ for all $\xi\geq 0$ and $T>0$. Then, $t\mapsto
+\underline x(t)$ is continuous with respect to the topology
+generated by $d_{P}^\circ$.
+\end{Lemma}
+
+\begin{proof}
+It suffices to show that
+$$ \lim_{s\to t} \sum_{k=0}^\infty |x_k(s) - x_k(t)|e^{\xi k} = 0$$ for all $t\geq 0$ and $\xi\geq
+0$. Let $T > 0$ and choose a $K \in \R_+$ such that 
+$$\sup_{0\leq t\leq T} \sum_{k=0}^\infty x_k(t) e^{2\xi k}\leq K.$$ 
+Then, necessarily, $x_k(t)e^{\xi
+k} \leq Ke^{-\xi k}$ for all $k \in \N$ and $0\leq t\leq T$. For
+      $\varepsilon>0$ choose $m\in\mathbb N$ such that
+      $\sum_{k=m+1}^\infty Ke^{-\xi k} \leq \varepsilon/2$. Then,
+      \begin{align*}
+        \lim_{s\to t} \sum_{k=0}^\infty |x_k(s) - x_k(t)|e^{\xi k} &
+        \leq \lim_{s\to t} \sum_{k=0}^m |x_k(s) - x_k(t)|e^{\xi k} +
+        \sum_{k=m+1}^\infty (x_k(s)+x_k(t)) e^{\xi k} \leq
+        \varepsilon.
+      \end{align*}
+      Letting $\varepsilon\to 0$ gives the assertion.
+     \end{proof}

@@ -1,0 +1,74 @@
+%--------------------------------------------------------------------------------------------%
+% Header
+%--------------------------------------------------------------------------------------------%
+%\documentclass[a4paper,open=right,12pt,BCOR5mm,DIV12]{scrbook}
+\documentclass[paper=A4,headings=small,headsepline,open=right,BCOR=5mm]{scrbook}
+%12pt,DIV12
+
+%\usepackage{showframe}
+\usepackage[utf8]{inputenc}						%UTF8 Coding
+\usepackage{scrpage2}							%Layout
+\usepackage{eso-pic}
+\usepackage{moreverb}							%Display Source Code
+\usepackage[final]{pdfpages}
+
+% Draft-Packages
+%\usepackage[notcite,notref]{showkeys}
+
+% My definitions & Layout
+\include{paulspackage}							%My personal definitons
+\bibliographystyle{plainnat}
+
+\begin{document}
+
+\pagestyle{scrheadings}
+%\clearscrheadfoot %Kopf und Fußzeile löschen
+%\automark[section]{chapter} 														
+%\renewcommand{\chaptermark}[1]{\markright{#1}}																
+%\ohead{\chaptername~\thechapter}		
+%\ihead{\headmark}
+%\ohead{\pagemark} 
+%\setheadsepline{0.2pt}															
+%\setkomafont{pageheadfoot}{\small}
+
+%--------------------------------------------------------------------------------------------%
+% Title & Index
+%--------------------------------------------------------------------------------------------%
+\pagenumbering{roman}
+\input{Deckblatt.tex}
+\clearpage
+
+\pdfbookmark[1]{Tables of content}{toc}
+\tableofcontents
+\newpage
+%\cleardoublepage
+
+
+%--------------------------------------------------------------------------------------------%
+% Content
+%--------------------------------------------------------------------------------------------%
+\pagenumbering{arabic}
+\setcounter{page}{0}
+
+\include{Introduction}
+\include{Preliminaries}
+\include{MullersRatchet}
+\include{CompensatoryMutations}
+	\include{DiffusionApproximation}
+	\include{ODEApproximation}
+\include{Simulations}
+
+%\include{Zwischenlager}
+
+
+
+%--------------------------------------------------------------------------------------------%
+% Anhang
+%--------------------------------------------------------------------------------------------%
+\newpage
+\bibliography{Diplomarbeit}
+\appendix
+\include{Erklaerung}
+\include{mrj}
+
+\end{document}

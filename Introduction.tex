@@ -1,0 +1,133 @@
+\chapter{Introduction}
+
+\begin{quote}
+``I will not attempt here to predict from theory the quantitative effect of the
+ratchet mechanism. Involving natural selection, mutation, and genetic drift at many linked loci, the problem poses
+enormous difficulties for the application of population genetics theory. But the possible
+significance of the phenomenon makes it important that some theoretical treatment should be
+attempted. The ratchet mechanism has been unjustly ignored by theoretical population genetics.''
+\cite{felsenstein_evolutionary_1974}  
+\end{quote}
+
+\noindent
+While the problems Joseph Felsenstein saw arising from a mathematical model in population
+genetics back in 1974 have not been solved to the present day, \emph{Muller's ratchet} has 
+in the meanwhile gotten the attention of biomathematicians and has become a
+well-known model in population genetics.
+
+The importance he claimed it has is given by the biological question to which
+Muller's ratchet is a possible answer:
+\begin{quote}Why has sex evolved?\end{quote}
+From an evolutionary point of view, the step from asexual to sexual reproduction
+is a rather harsh one, as the population suddenly needs to spend a significant
+part of its resources on individuals that only contribute a minor part to
+reproduction: males. Population geneticists have therefore searched for an
+advantage that justifies this effort and have found a biological phenomenon
+called (sexual) recombination: During meiosis, a process that is part of the production
+of gametes, either the maternal or the paternal version of every chromosome is
+transferred to the gamete. As this happens independently for each chromosome,
+(nearly) all gametes contain a mixture of the genomes of their producer's 
+parents.\footnote{To be precise, recombination refers to the ``shuffling''
+of genetic material in general. The described phenomenon is just one form of
+recombination, the so called interchromosomal recombination. While there are
+other important mechanisms leading to recombinations (e.g. crossing-overs), it
+suffices for our purpose to imagine it in the described way.}
+
+It has already been suggested by \cite{fisher_genetical_1930} and
+\cite{muller_genetic_1932} that the possibility of recombinations may be an
+advantage of sexual reproduction because beneficial mutations -- small
+spontaneous changes in the genome that increase the ``fitness'' of an individual
+-- can be combined in a later descendant, even if they occur in different individuals. 
+While the importance of this effect was
+discussed heavily\footnote{See \cite{felsenstein_evolutionary_1974} for a
+summary.}, \cite{muller_relation_1964} gave another argument looking at
+mutations that decrease an individuals fitness: Assume that such deleterious
+mutations constantly occur inside a population. As genomes are typically large, there is
+only a very small chance that two different mutations will occur in the very
+same place in the genome. Hence, the reversion of one mutation by another one is so
+unlikely that we can ignore this effect. Without recombination, an
+individual passes its whole genome -- including all mutations -- to all its
+offspring. Thus, the total number of mutations in the population can decrease
+only if individuals with many mutations have no descendants. However, once all
+mutants have by chance acquired one mutation, there will never be an individual
+free of mutations again. As this will happen again and again, the population
+will gather more and more deleterious mutations and will finally face
+extinction. Because the accumulation of mutations happens in an 
+irreversible way, like the ``clicks" of a ratchet moving forward notch by
+notch, this argument became known as Muller's ratchet.
+
+This argument was qualitatively accepted in the following years
+and has by now become a textbook model for the advantage of sexual reproduction
+in the biological literature. Even though Joseph Felsenstein proved to be
+right in the difficulties he had seen in determining the quantitative effect of
+Muller's ratchet. Up to now the literature concerned with Muller's ratchet
+relies on computer simulations and approximating models to determine how fast
+the fitness of a population decreases (e.g. \cite{haigh_accumulation_1978},
+\cite{lynch_mutation_1990}, \cite{stephan_advance_1993},
+\cite{gessler_constraints_1995}, \cite{gordo_degeneration_2000},
+\cite{etheridge_how_2008}). Though this is the key question in the analysis of
+Muller's Ratchet, an exact determination of this ``click rate'' still seems to
+be out of reach.
+
+Along with other extensions of the classical model, like a diploid version of
+Muller's ratchet (\cite{pamilo_accumulation_1987},
+\cite{charlesworth_rapid_1997}) and a model with variable population size
+(\cite{gabriel_mullers_1993}), the behavior of Muller's ratchet with so called
+\emph{compensatory mutations} has been discussed in the past. In contrast to the
+normal model, we relax the above mentioned assumption that deleterious
+mutations cannot be compensated by a second mutation. Hence, there is a
+small chance for the occurrence of a back-mutation. We assume that the
+probability for such a compensatory mutation is $\gamma$ for every malicious
+mutation in the genome. However, deleterious mutations typically arise with a
+rate of $\lambda$ per genome, whereas the rate of compensatory mutations only
+scales with the number of acquired mutations. \cite{haigh_accumulation_1978}
+concluded that compensatory mutations occur far too rarely to counter the
+ratchet effect. However, as the rate of compensatory mutations increases
+with the number of acquired deleterious mutations -- while the rate of occurrence of the
+latter is constant --  it seems reasonable that the ratchet will eventually
+reach an equilibrium state if compensatory mutations are present.
+
+It has been discussed if this equilibrium can be reached by natural populations,
+or if it lies above the maximal number of deleterious mutations that a
+population can bear. On the one hand, \cite{antezana_era_1997} have argued that
+the former could be important for small viruses. On the other hand,
+\cite{loewe_quantifying_2006} concluded that the latter is likely for human
+mitochondria and \cite{chao_fitness_1990} and \cite{smith_evolution_1978}
+claimed that compensatory mutations occur far too rarely to have a significant
+effect in a population undergoing Muller's ratchet. However, new insights in
+molecular biology in the past decades have shown that (back-)mutation is not the
+only mechanism in living cells that can compensate the effects of unfavorable
+mutations. \cite{maisnier-patin_adaptation_2004} suggested at least five
+different ways how this could theoretically happen. \cite{poon_rate_2005} found
+experimental evidence of such compensations in the DNA bacteriophage
+$\varphi$X$174$. \cite{maier_complex_2008} and
+\cite{depperschmidt_mathematical_2011} studied the plasmid genomes of mosses and
+concluded that deleterious mutations are compensated by RNA editing, a couple of
+mechanisms by which specific bases in the genome are altered after the sequence
+has been transcribed from DNA to RNA.
+
+Summarizing all these mechanisms, it is reasonable to assume that the rate of
+compensatory mutations can be high enough to affect a natural population.
+Therefore we extend the classical model of Muller's ratchet by compensatory
+mutations and extend most of the known results about the ratchet to that case.
+In particular, we show that the ratchet with compensatory mutations has exactly one
+equilibrium state in which the malicious effects of mutations on one side
+cancels out with the beneficial effects from purifying selection and
+compensatory mutations on the other (Corollaries~\ref{ode:c:ex_stat_point} \&
+\ref{ode:c:conv_to_theta}). Furthermore, the population always reaches
+this equilibrium as the time goes towards infinity (also Corollary
+\ref{ode:c:conv_to_theta}). To achieve these results, we start with some
+necessary topological preliminaries (Chapter~$2$). Thereafter, we state the
+corresponding results for the classical ratchet, where they can be obtained in a
+time-discrete model, mostly due to the work of \cite{maia_analytical_2003}
+(Chapter~$3$). In Chapter $4$, we introduce compensatory mutations and start
+with a brief look at an extended version of Haigh's time-discrete model
+(Chapter~$4.1$). Afterwards we move on to time-continuous models. Here we
+will use the diffusion approximation of Muller's ratchet, which is based on a
+stochastic differential equation (SDE). We translate the SDE into a martingale
+problem and show that it uniquely defines a stochastic process (Chapter~$4.2$).
+Afterwards we increase the population size towards infinity, were the SDE turns
+into an ordinary differential equation (ODE). We solve the ODE and derive the
+mentioned results (Chapter~$4.3$). Finally, we present computer simulations
+to see how large the ``finite population effect'' is for various combinations
+of parameters (Chapter~$5$).

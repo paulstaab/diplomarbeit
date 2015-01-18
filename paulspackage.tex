@@ -1,0 +1,169 @@
+%\ProvidesPackage{paulspackage}
+
+%------------------------------------------------------------------------
+% Packages
+%------------------------------------------------------------------------
+\usepackage{graphicx}							%Grafiken
+\usepackage{amsmath,amsfonts,amsthm,amssymb}	%AMS Packete
+\usepackage{natbib}								%Literaturverwaltung
+\usepackage{dsfont,mathrsfs}					%More math fonts
+
+
+%------------------------------------------------------------------------
+% Theorems
+%------------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{Theorem}{Theorem}[chapter]
+\newtheorem*{Theorem*}{Theorem}
+\newtheorem{Lemma}[Theorem]{Lemma}
+\newtheorem{Proposition}[Theorem]{Proposition}
+\newtheorem{Corollary}[Theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{Definition}[Theorem]{Definition}
+\newtheorem{Example}[Theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem*{Remark}{Remark}
+\newtheorem*{Note}{Note}
+\newtheorem*{Commentary}{Commentary}
+\newtheorem*{Notation}{Notation}
+
+
+
+%------------------------------------------------------------------------
+% Commands
+%------------------------------------------------------------------------
+
+% Common Sets
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\1}{\ensuremath{\mathds{1}}}
+
+% P, E, Var
+\newcommand{\PR}[1]{\mathbf{P} \! \left[ #1 \right]}
+\newcommand{\CPR}[2]{\PR{ #1 \, | \, #2 }}
+\newcommand{\E}[1]{\mathbf{E} \! \left[ #1 \right]}
+\newcommand{\CE}[2]{\E{ #1 \, | \, #2 }}
+\newcommand{\Var}[1]{\mathbf{Var} \! \left[ #1 \right]}
+\newcommand{\CVar}[2]{\Var{ #1 \, | \, #2 }}
+
+
+% Distributions
+\newcommand{\Poi}[1]{\text{Poi} \left( #1 \right)}
+\newcommand{\Bin}[2]{\text{Bin}\left(#1,#2\right)}
+
+
+% Arrows
+%\newcommand{\iff}{\Leftrightarrow}
+
+
+% Different Types Of Convergence
+\newcommand{\Conv}{\rightarrow}
+\newcommand{\WeakConv}{\Rightarrow}
+
+
+% Classes of functions
+\newcommand{\FB}[1]{\ensuremath{\mathcal{B}\!\left(#1\right)}}
+\newcommand{\FBEM}[1]{\ensuremath{\mathcal{B}^{e}\!\left(#1\right)}}
+\newcommand{\FM}[1]{\ensuremath{\mathcal{M}\!\left(#1\right)}}
+\newcommand{\FC}[1]{\ensuremath{\mathcal{C}\!\left(#1\right)}}
+
+
+% Skalarprodukt
+\newcommand{\SProd}[2]{\ensuremath{\langle #1,#2 \rangle}}
+\newcommand{\SProdIndex}[3]{\ensuremath{\langle #1,#2 \rangle_{\!_{#3}}}}
+
+
+
+%------------------------------------------------------------------------
+% Diplomarbeit
+%------------------------------------------------------------------------
+
+\newcommand{\Simplex}{ \ensuremath{\mathbb{S}} }
+\newcommand{\SimplexEM}{ \ensuremath{\Simplex^\circ} }
+\newcommand{\Vector}[1]{ \underline{#1} }
+
+%muller's ratchet
+\newcommand{\mr}{\ensuremath{\Vector{X}} }
+\newcommand{\mrT}[1]{\ensuremath{\mr\!\left(#1\right)} }
+\newcommand{\mrK}[1]{\ensuremath{X_{#1}}}
+\newcommand{\mrTOmega}[2]{\ensuremath{\mr\!\left(#1\right)\!\left(#2\right)} }
+\newcommand{\mrKT}[2]{\ensuremath{X_{#1} \! \left( #2 \right)} }
+
+%recurrent ratchet (relative to fittest class)
+\newcommand{\RR}{\ensuremath{\Vector{Y}}}
+\newcommand{\RRT}[1]{\ensuremath{\RR\!\left(#1\right)} }
+%\newcommand{\RRTOmega}[2]{\ensuremath{\mr\!\left(#1\right)\!\left(#2\right)} }
+\newcommand{\RRKT}[2]{\ensuremath{Y_{#1} \! \left( #2 \right)} }
+
+%fittest Class
+\newcommand{\fC}{\ensuremath{K^*}}
+\newcommand{\fCT}[1]{\ensuremath{\fC \! \left( #1 \right)}}
+\newcommand{\fCTO}[2]{\ensuremath{\fC \! \left(#1\right) \! \left(#2\right)}}
+
+\newcommand{\mrIps}{\ensuremath{\Vector{x}} }
+\newcommand{\mrIpsT}[1]{\ensuremath{\mrIps \! \left( #1 \right)} }
+\newcommand{\mrIpsKT}[2]{\ensuremath{x_{#1} \! \left( #2 \right)} }
+
+\newcommand{\mrDif}{\ensuremath{\Vector{X}} }
+\newcommand{\mrDifT}[1]{\ensuremath{\mr \! \left( #1 \right)} }
+\newcommand{\mrDifKT}[2]{\ensuremath{X_{#1} \! \left( #2 \right)} }
+\newcommand{\mrDifK}[1]{ \ensuremath{X_{#1}} }
+
+\newcommand{\mrOdeComp}{\ensuremath{x}}
+\newcommand{\mrOde}{\ensuremath{\Vector{\mrOdeComp}}}
+\newcommand{\mrOdeK}[1]{\ensuremath{ \mrOdeComp_{#1} }}
+\newcommand{\mrOdeT}[1]{\ensuremath{ \mrOde \! \left( #1 \right) }}
+\newcommand{\mrOdeKT}[2]{\ensuremath{ \mrOdeComp_{#1} \! \left( #2 \right) }}
+
+\newcommand{\DualProc}{\ensuremath{\mathbf{A}} }
+\newcommand{\DualProcT}[1]{\ensuremath{\DualProc \! \left( #1 \right)} }
+\newcommand{\DualFunc}{\ensuremath{H}}
+\newcommand{\DualFuncXA}[2]{\ensuremath{\DualFunc \! \big( #1, #2 \! \big)} }
+\newcommand{\DualFuncXsAt}[2]{\ensuremath{\DualFunc \! \big( \mrOdeT{#1},
+\DualProcT{#2} \! \big)} }
+\newcommand{\DualFuncXSN}[3]{\ensuremath{\DualFuncXA{#1}{(#2,#3)}} }
+\newcommand{\DualBeta}{\ensuremath{\beta}}
+\newcommand{\DualBetaA}[1]{\ensuremath{\DualBeta \big( #1 \big)}}
+\newcommand{\DualBetaAt}[1]{\ensuremath{\DualBetaA{\DualProcT{#1} \! }}}
+
+\newcommand{\rrsym}{\mathbf{Y}}
+\newcommand{\rrsyt}{\rrsym \! \left(t \right)}
+
+%Old Stuff
+\newcommand{\Prob}[1]{\P{#1}}
+\newcommand{\ConProb}[2]{\CP{#1}{#2}}
+\newcommand{\Ex}[1]{\mathbf{E} \! \left[ #1 \right]}
+\newcommand{\ConEx}[2]{\Ex{ #1 \, | \, #2 }}
+
+%Generators
+
+\newcommand{\GA}{\ensuremath{G^{\alpha}}}
+\newcommand{\GAFX}[2]{\ensuremath{\GA #1 \! \left( #2 \right)}}
+
+\newcommand{\Gmut}[1]{\ensuremath{G_{\text{mut}}}}
+\newcommand{\GAmut}{\ensuremath{\Gmut{\alpha}}}
+\newcommand{\GAmutFX}[2]{\ensuremath{\GAmut #1 \! \left( #2 \right)}}
+
+\newcommand{\Gsel}[1]{\ensuremath{G^{#1}_{\text{sel}}}}
+\newcommand{\GAsel}{\ensuremath{\Gsel{\alpha}}}
+\newcommand{\GAselFX}[2]{\ensuremath{\GAsel #1 \! \left( #2 \right)}}
+
+\newcommand{\Gcomp}[1]{\ensuremath{G_{\text{cm}}}}
+\newcommand{\GAcomp}{\ensuremath{\Gcomp{\alpha}}}
+\newcommand{\GAcompFX}[2]{\ensuremath{\GAcomp #1 \! \left( #2 \right)}}
+
+\newcommand{\Gres}[1]{\ensuremath{G^{#1}_{\text{res}}}}
+\newcommand{\GNres}{\ensuremath{\Gres{N}}}
+\newcommand{\GNresFX}[2]{\ensuremath{\GNres #1 \! \left( #2 \right)}}
+
+\newcommand{\Ito}{It\^{o} }
+
+%------------------------------------------------------------------------
+% More Packages (needs to be last)
+%------------------------------------------------------------------------
+\usepackage[unicode,colorlinks=true,linkcolor=black,
+			citecolor=black,urlcolor=black]{hyperref}	%clickable Links

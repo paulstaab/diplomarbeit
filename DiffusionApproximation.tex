@@ -1,0 +1,825 @@
+\section{The Diffusion Approximation}
+
+In this chapter, we are using diffusion theory to approximate Muller's ratchet (with compensatory
+mutations) by a time continuous stochastic process. Similar as it has been done for the original
+ratchet (e.g. in \cite{stephan_advance_1993}, \citet{etheridge_how_2008}), we translate the
+dynamics in the definition of Muller's ratchet with compensatory mutations into a stochastic differential
+equation (SDE) on $\Simplex$ defined by
+\begin{align} \label{da:eq:difdef}\tag{$\ast$}
+d \mrDifKT{k}{t} = 
+	b_k(\mrDifT{t}) dt 
+  + \sum_{l \not= k} \sqrt{\frac{1}{N} \mrDifKT{k}{t} \mrDifKT{l}{t} } \, dW_{kl}
+\end{align}
+for $k \in \N $, where $X_{-1} := 0$, 
+\begin{align} \label{da:eq:difdefdet}
+ b_k(\Vector{x}) := 	
+ \alpha \sum_l (l-k) x_k x_l 
+  + \lambda \left( x_{k-1} - x_k \right)
+  + \gamma \left( (k+1) x_{k+1} - k x_k \right) 
+\end{align}
+and $W_{kl}$ are independent, $1$-dimensional Brownian motions for $k>l$ and
+$W_{kl} := -W_{lk}$ for $k<l$.
+For $\alpha = \lambda = \gamma = 0$, this is the classical diffusion approximation of
+the Wright-Fisher dynamics. Again, we add selection, mutation and compensatory mutations to this
+model via the three corresponding terms in \eqref{da:eq:difdefdet}. As $(1-\alpha)^k \sim 1 - \alpha
+k$ for small $\alpha$, we have the occurrence of $-\alpha k$ in the selection term. The mutation
+term reflects the flow of individuals of type $k$ to type $k+1$ and from $k-1$ to $k$, both with
+constant rate $\lambda$. The compensatory mutation term is similar, but the rates depend on the
+current number of mutations. We briefly recall the necessary notations for
+stochastic differential equations.
+
+\begin{Definition}[SDE]
+We say that a tuple $(\Omega,\mathscr{F},\mathbf{P},(W_{kl})_{k<l},\mrDif)$,
+consisting of a filtered probability space $(\Omega,\mathscr{F},\mathbf{P})$, an array
+$(W_{kl})_{k<l}$ of $\mathscr{F}$-Brownian motions satisfying the conditions
+mentioned above and an adapted process $\mrDif$, is a \emph{(weak) solution} of
+the SDE~\eqref{da:eq:difdef} with initial distribution $\mu$, if
+$X(0)_*\mathbf{P} = \mu$ and it satisfies the SDE or, more explicitly,
+\[ 
+\mrDifKT{k}{t} = \mrDifKT{k}{0} + \int_0^t b_k(\mrDifT{s}) \, ds 
+  + \sum_{l \not= k} \int_0^t \sqrt{\frac{1}{N} \mrDifKT{k}{s} \mrDifKT{l}{s} }
+  \, dW_{kl}(s)
+\]
+for all $k \in \N$. We say that \emph{(weak) existence} holds for an initial
+distribution if there is a weak solution with this initial distribution.
+Analogous, \emph{uniqueness} holds for an initial distribution if all weak
+solutions for it are equal in distribution. We say the SDE is \emph{well-posed}
+if existence and uniqueness holds for every initial distribution. For Muller's
+ratchet, we always assume that $\mathscr{F}$ is the natural filtration of $\mrDif$.
+\end{Definition}
+
+\noindent
+It is a well-known result by Stroock and Varadhan that stochastic differential equations can
+equivalently be formulated as martingale problems under sufficient conditions (e.g.
+\cite[Theorem 18.7]{kallenberg_foundations_1997}). The diffusion approximation of Muller's ratchet
+was defined as a SDE, because this is quite typical for Wright-Fisher models.
+However, a ``typical'' Wright-Fisher model has only a finite number of different
+types, whereas the type space of Muller's ratchet is $\N$. Therefore it is realised as
+a Fleming-Viot process, which are typically defined as martingale problems (e.g.
+\cite{ethier_flemingviot_1993}). Hence, we want to formulate Muller's ratchet as
+a martingale problem in order to apply results from the theory of Fleming-Viot
+processes. This requires further investigation, as the conditions of the
+Stroock-Varadhan-Theorem are not given here, mainly because $\Simplex$ is an
+infinite dimensional space.
+
+
+\subsection{Characterisation As A Martingale Problem}
+
+As we have done for stochastic different equations, we start by recalling the basic notations in the
+theory of martingale problems.
+
+\begin{Definition}[Martingale problem]
+Let $(E,r)$ be a complete and separable metric space, $\mathbf{P}_0 \in \mathcal{P}(E)$,
+$\mathcal{F} \subseteq \mathcal{M}(E)$ and $G$ a linear operator on
+$\mathcal{M}(E)$. A distribution $\mathbf{P}$ of an $E$-valued stochastic process $\mathcal{X} =
+(\mathcal{X}_t)_{t \geq 0}$ is called a solution of the $(E,
+\mathbf{P}_0,G,\mathcal{F})$-martingale problem if $\mathcal{X}_0$ has
+distribution $\mathbf{P}_0$, almost all paths of $\mathcal{X}$ are cadlag
+and $N^f = (N^f_t)_{t \geq 0}$ defined by
+\begin{align} \label{da:eq:N^f}
+N^f_t = 
+f(\mathcal{X}_t) - f(\mathcal{X}_0) - \int_0^t Gf(\mathcal{X}_s) ds
+\end{align}
+is a $\mathbf{P}$-martingale with respect to the canonical filtration for all $f \in \mathcal{F}$.
+We say that a process $\mathcal{X}$ solves the $(E,
+\mathbf{P},G,\mathcal{F})$-martingale problem if its distribution does so and refer to $G$ as its (infinitesimal) generator. Moreover, we call a
+martingale problem well-posed if there is a unique solution $\mathbf{P}$. 
+\end{Definition}
+
+\noindent
+Hence, we need a domain $\mathcal{F}$ and a generator $G$ to define a martingale problem
+on $\Simplex$. We define the ones that correspond to SDE~\eqref{da:eq:difdef} in the next
+definition. In fact, we state two different domains $\mathcal{F}$ and $\overline{\mathcal{F}}$ for
+technical reasons. We will show in Theorem~\ref{da:t:SDE=MP} that the
+corresponding martingale problems are equivalent.
+
+\begin{Definition}[Domains and generator for Muller's Ratchet]\mbox{}\label{da:d:D&G-MP}
+Recall Definition~\ref{pre:d:F}. In addition to $\overline{\mathcal F}$, we
+define the algebra
+\begin{align*}
+\mathcal{F} &:=  \mathcal{A} \left( \{f_{\varphi_1,...,\varphi_n}: n\in\mathbb N, \varphi_i \in
+        	\FB{\N} \text{ with } |\text{supp}(\varphi_i)| < \infty \text{ for } i = 1,\ldots,n\}
+        	\right) \\
+\end{align*}
+
+\noindent
+and the generator $\GA$ on $\overline{\mathcal F}$ with domain $\overline{\mathcal F}$
+by
+
+{\allowdisplaybreaks
+\begin{equation*} \label{da:eq:GA}
+\begin{aligned}
+\GAFX{f}{\Vector{x}} & =
+		\GAselFX{f}{\Vector{x}} + \GAmutFX{f}{\Vector{x}} 
+	    + \GAcompFX{f}{\Vector{x}} + \GNresFX{f}{\Vector{x}} \\
+\GAselFX{f}{\Vector{x}} & =
+        \alpha \sum_{k=0}^\infty \sum_{\ell=0}^\infty(\ell-k)x_\ell x_k
+        \frac{\partial}{\partial x_k} f(\Vector{x}),\\ 
+\GAmutFX{f}{\Vector{x}} & = 
+		\lambda \sum_{k=0}^\infty (x_{k-1} - x_k) \frac{\partial}{\partial x_k} f(\Vector{x}),\\
+\GAcompFX{f}{\Vector{x}} & = 
+		\gamma \sum_{k=0}^\infty ((k+1)x_{k+1} - kx_k) \frac{\partial}{\partial x_k}
+		f(\Vector{x}) \qquad \text{and}\\ 
+\GNresFX{f}{\Vector{x}} &= 
+		\tfrac 1{2N} \sum_{k,\ell = 0}^\infty x_k ( \delta_{kl} - x_\ell) \frac{\partial^2}{\partial x_k
+		\partial x_\ell} f(\Vector{x})
+      \end{aligned}
+\end{equation*}}
+
+\noindent
+with $\alpha, \lambda, \gamma\in [0,\infty)$, $N\in(0,\infty)$.
+\end{Definition}
+
+% \begin{Remark} XXX Wrong! XXX
+% Please note that $\overline{\mathcal F}$ contains functions defined on $\R^\N$ and the partial
+% derivatives inside the generator are the normal ones on this space. However, we will use $\Simplex$
+% and $\SimplexEM$ as state spaces for our martingale problems. In that case, we restrict the
+% functions in $\overline{\mathcal F}$ to $\Simplex$ or $\SimplexEM$, eventually \emph{after} partial
+% derivation.
+% \end{Remark}
+
+\noindent
+We will now prove a lemma that is the technical key for the diffusion approximation.
+Basically, it says that if Muller's ratchet starts with a distribution in
+$\SimplexEM$, then it will always take values in this space.
+
+\begin{Lemma}[Bounds on exponential moments]\label{da:l:expBounds}
+Let $\Vector{x} \in \SimplexEM$ and $\mrDif =
+(\mrDifT{t})_{t\geq 0}$ be a solution of the $(\Simplex,
+\delta_{\Vector{x}},\GA, \mathcal{F})$-martingale
+problem and recall that $h_\xi(\Vector{x}):=\sum_{k \in \N} x_k e^{\xi k}$. Then, for all $T>0$,
+there is $C>0$, depending on $T$ and all model parameters with
+\begin{align}\label{da:eq:expBounds1}
+  \mathbf E\big[ & \sup_{0\leq t\leq T} h_\xi(\mrDifT{t})^2\big] \leq C \cdot
+  h_{2\xi+2}(\Vector{x}).
+\end{align}
+In particular, we have $\sup_{0\leq t\leq T} h_\xi(\mrDifT{t}) < \infty$ almost
+surely.
+\end{Lemma}
+
+\begin{proof}
+We define 
+$$ h_{\xi,m}(\underline x) := \sum_{k=0}^m x_k e^{\xi k}
++ e^{\xi m} \left( 1 - \sum_{k=0}^m x_k \right)
+= e^{\xi m} + \sum_{k=0}^m x_l (e^{\xi k} - e^{\xi m})
+\in \mathcal{F}
+$$ 
+for $m \in \N$. Note that for $\Vector{x} \in \Simplex$,
+$$ h_{\xi,m}(\underline x) = \sum_{k=0}^\infty x_k e^{\xi(k \wedge m)} $$
+We compute
+\begin{equation} \label{da:eq:imp1}
+\begin{aligned}
+\GAmutFX{h_{\xi,m}}{\Vector{x}} 
+& = \lambda \sum_{k=0}^m (x_{k-1} - x_k) (e^{\xi k} - e^{\xi m}) \\ 
+&  = \lambda \sum_{k=0}^{m-1} x_k \Big( e^{\xi(k+1)} - e^{\xi k}\Big) \geq 0,\\
+\GAcompFX{h_{\xi,m}}{\Vector{x}} 
+& = \lambda \sum_{k=0}^m ((k+1)x_{k+1} - k x_k) (e^{\xi k} - e^{\xi m}) \\ 
+&  = \lambda \sum_{k=0}^m k x_k \Big( e^{\xi(k-1)} - e^{\xi k}\Big) \leq 0,\\
+\GAselFX{h_{\xi,m}}{\Vector{x}} 
+& = \alpha \sum_{k=0}^m \sum_{\ell=0}^\infty (\ell-k) x_\ell x_k (e^{\xi k} - e^{\xi m}) \\
+& = \alpha \sum_{k=0}^\infty \sum_{\ell=0}^\infty (\ell-k) x_\ell x_k (e^{\xi (k \wedge m)} - e^{\xi
+m}) \\ 
+& = \alpha \sum_{k=0}^\infty \sum_{\ell=0}^\infty (\ell-k) x_\ell x_k e^{\xi (k \wedge m)} \leq 0,
+\end{aligned}
+\end{equation}
+where the latter equality only holds for $x\in\Simplex$. For the final
+inequality, assume that $Z$ is an $\N$-valued random variable with
+distribution $\Vector{x}$. 
+Then we have 
+$$ \GAselFX{h_{\xi,m}}{\Vector{x}} 
+= - \alpha \, \mathbf{COV}[Z, e^{\xi (Z\wedge m)}] \leq 0,$$ 
+since for non-decreasing functions $f,g$ and
+i.i.d. random variables $Z$ and $Z'$
+$$ \E{\big(f(Z) - f(Z')\big)\big(g(Z) - g(Z')\big)} \geq 0 $$
+as both factors have the same sign. It follows that
+$$ 2 \, \mathbf{COV}[f(Z),g(Z)] = 2 \, \E{f(Z)g(Z)} - 2 \, \E{f(Z)} \E{g(Z)}
+\geq 0 .$$
+
+\noindent
+Second, we prove that a similar bound as
+\eqref{da:eq:expBounds1} holds at fixed time points. We write
+\begin{align*}
+\frac{d}{dt} \mathbf E[h_{\xi,m}(\mrDifT{t})] 
+& = \mathbf E\big[ \GAFX{h_{\xi,m}}{\mrDifT{t}} \big] 
+  \leq \mathbf E\big[ \GAmutFX{h_{\xi,m}}{\mrDifT{t}} \big] \\ 
+& \leq \lambda \mathbf E\Big[ e^\xi \sum_{k=0}^\infty \mrDifKT{k}{t} 
+		e^{\xi(k\wedge m)} - \sum_{k=0}^\infty X_k(t) e^{\xi(k\wedge m)}\Big] \\ 
+& = \lambda (e^\xi - 1) \mathbf E[h_{\xi,m}(\mrDifT{t})].
+\end{align*}
+So, by Gronwall's inequality,
+\begin{align*}%\label{eq:gron1}
+\mathbf E[h_{\xi,m}(\mrDifT{t})] 
+  \leq h_{\xi,m}(\Vector{x}) \cdot \exp\big( \lambda t(e^\xi - 1)\big)
+\end{align*}
+which also implies 
+\begin{align}\label{da:eq:gron1}
+\mathbf E[h_{\xi}(\mrDifT{t})] \leq h_{\xi}(\Vector{x}) \cdot \exp\big( \lambda t(e^\xi - 1)\big)
+\end{align}
+by monotone convergence. 
+
+\noindent
+Third, \eqref{da:eq:imp1} implies that
+$$ \left( h_{\xi,m}(\mrDifT{t}) - 
+	\int_0^t \GAselFX{h_{\xi,m}}{\mrDifT{s}} + \GAcompFX{h_{\xi,m}}{\mrDifT{s}} ds \right)_{t\geq 0} $$
+is a submartingale. Now, by Doob's submartingale inequality and the fact that 
+$(h_\xi(\underline x))^2 \leq h_{2\xi}(\underline x)$ for all $\underline x\in\mathbb S$ and
+$\xi\geq 0$,
+ 
+\begin{align*}
+\mathbf E[&\sup_{0\leq t\leq T} (h_{\xi,m} (\mrDifT{t}))^2]\\
+&  \leq \mathbf E\Big[\sup_{0\leq t\leq T} \Big(h_{\xi,m} (\mrDifT{t}) 
+  	- \int_0^t \GAselFX{h_{\xi,m}}{\mrDifT{s}} + \GAmutFX{h_{\xi,m}}{\mrDifT{s}} ds\Big)^2\Big] \\
+& \leq 4 \cdot \mathbf E\Big[\Big(h_{\xi,m} (\mrDifT{T}) 
+	- \int_0^T \GAFX{h_{\xi,m}}{\mrDifT{s}} + h_{\xi,m}(\mrDifT{s}) ds\Big)^2\Big] \\ 
+& \leq 8 \cdot \Big(\mathbf E\big[ (h_{\xi,m}(\mrDifT{T}))^2\big] \\ 
+& \qquad \qquad + \int_0^T \int_0^T \mathbf E[(\GAselFX{h_{\xi,m}}{\mrDifT{s}}+
+											   \GAcompFX{h_{\xi,m}}{\mrDifT{s}}) \\ 
+& \qquad \qquad \qquad \qquad \qquad \qquad \cdot (\GAselFX{h_{\xi,m}}{\mrDifT{r}}+
+											   \GAcompFX{h_{\xi,m}}{\mrDifT{r}})dr ds\Big) \\ 
+& \leq 8 \cdot \Big(\mathbf E\big[ h_{2\xi}(\mrDifT{T})\big] + (\alpha + \gamma)^2 
+	\int_0 ^T \int_0^T \mathbf E[h_{\xi+1}(\mrDifT{s}) h_{\xi+1}(\mrDifT{r})] dr ds \Big)\\ 
+& \leq 8 \cdot \mathbf E\big[ h_{2\xi}(\mrDifT{T})\big] + 16 \cdot (\alpha + \gamma)^2 T
+	\int_0^T \mathbf E\big[ h_{2\xi+2}(\mrDifT{s})\big]ds \\ 
+& \leq C\cdot h_{2\xi+2}(\underline x)
+\end{align*}
+for $C = (8+16\alpha^2 T^2) \exp\big(\lambda T(e^{2\xi+2}-1)\big)$ by \eqref{da:eq:gron1}.
+\end{proof}
+
+\noindent
+We need another small result to prove Theorem~\ref{da:t:SDE=MP}.
+
+\begin{Lemma} \label{da:l:f'}
+Let $f_{\varphi_1,\ldots,\varphi_n}$ be as in Definition~\ref{pre:d:F}. For $k,l \in \N$, its 
+first and second order partial derivatives are 
+\begin{align*}
+\frac{\partial}{\partial x_k} f_{\varphi_1,\ldots,\varphi_n}(\Vector{x}) 
+&= 	\sum_{i=1}^n \varphi_i(k)
+f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\varphi_n}(\Vector{x})
+\end{align*}
+and
+\begin{align*}
+\frac{\partial^2}{\partial x_k \partial x_l} f_{\varphi_1,\ldots,\varphi_n} (\Vector{x})
+= \sum_{\substack{i,j=1,\\i \not = j}}^n \varphi_i(k) \varphi_j(l)
+f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\widehat{\varphi_j},\ldots,\varphi_n}(\Vector{x}) 
+\end{align*}
+where $\widehat{\varphi_i} := 1$ for all $i$.
+\end{Lemma}
+
+\begin{proof}
+We use an induction over $n$. While
+$n=1$ is trivial, we have
+\begin{align*}
+\frac{\partial}{\partial x_k} f_{\varphi_1,\ldots,\varphi_n}(\Vector{x})
+&=	\frac{\partial}{\partial x_k} \left( f_{\varphi_1,\ldots,\varphi_{n-1}}(\Vector{x}) 
+	\sum_{i=0}^\infty x_i \varphi_n(i) \right) \\
+&=	\sum_{i=1}^{n-1} \varphi_i(k)
+f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\varphi_{n-1}}(\Vector{x})
+	\sum_{i=0}^\infty x_i \varphi_n(i) \\
+&\quad + f_{\varphi_1,\ldots,\varphi_{n-1}}(\Vector{x}) \varphi_n(k)
+	 \\
+&= 	\sum_{i=1}^n \varphi_i(k) f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\varphi_n}(\Vector{x}).
+\end{align*}
+For the second order derivatives, we calculate
+\begin{align*}
+\frac{\partial^2}{\partial x_k \partial x_l} f(\Vector{x})
+&=	\frac{\partial}{\partial x_l} \sum_{i=1}^n \varphi_i(k) 
+	f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\varphi_n}(\Vector{x}) \\
+&= \sum_{\substack{i,j=1,\\i \not = j}}^n \varphi_i(k) \varphi_j(l)
+f_{\varphi_1,\ldots,\widehat{\varphi_i},\ldots,\widehat{\varphi_j},\ldots,\varphi_n}(\Vector{x}) 
+\qedhere
+\end{align*}
+\end{proof}
+
+\noindent
+We define the following notation to abbreviate calculations with stochastic integrals.  
+
+\begin{Notation}
+For suitable stochastic processes $H$ and $X$, we denote the \Ito integral with
+\[ \int H_s d X_s = H \cdot X. \] 
+To evaluate the integral on time $t$, we write
+\[ \int_0^t H_s d X_s = H \cdot X_t. \]
+Analogously, we denote the Lebesgue-measure with $\nu$ and the integral of $f: \R \to \R$ from $0$
+to $t$ as
+\[ \int_0^t f(s) ds = f \cdot \nu(t) \]
+\end{Notation}
+
+\noindent
+After these necessary preparations, we are now ready to prove the maybe most technical theorem of
+this manuscript.
+
+\begin{samepage}
+\begin{Theorem} \label{da:t:SDE=MP}
+Let $\mrDif$ be a process with values in $\Simplex$ and $\mrDifT{0} = \Vector{x} \in
+\SimplexEM$. Then, the following are equivalent:
+\begin{enumerate}
+\item The process $\mrDif$ solves the $(\Simplex,\delta_{\Vector{x}},\GA,\mathcal{F})$-martingale problem.
+\item The process $\mrDif$ solves the
+$(\SimplexEM,\delta_{\Vector{x}},\GA,\overline{\mathcal{F}})$-martingale problem.
+\item The process $\mrDif$ is a weak solution of the SDE \eqref{da:eq:difdef} with initial
+distribution $\delta_{\Vector{x}}$.
+\end{enumerate}
+\end{Theorem}
+\end{samepage}
+
+\begin{proof}
+2. $\Rightarrow$ 1.: Obviously $\mathcal{F} \subseteq \overline{\mathcal{F}}$. The assertion follows directly.
+
+\noindent
+1. $\Rightarrow$ 2.: Let $\mrDif$ solve the
+$(\Simplex,\delta_{\Vector{x}},\GA,\mathcal{F})$-martingale problem. 
+By Lemma~\ref{da:l:expBounds}, $\mrDif$ takes values in $\SimplexEM$ a.s. and hence is a solution of
+the $(\SimplexEM,\delta_{\Vector{x}},\GA,\overline{\mathcal{F}})$-martingale
+problem if $N^f$ (as in \eqref{da:eq:N^f} with $G = \GA$) is a martingale for
+every $f \in \overline{\mathcal{F}}$. However, it suffices to show the
+martingale property for the generator of $\overline{\mathcal{F}}$, as it is
+closed under multiplication, $N^f(t)$ is linear in $f$ and linear combinations
+of martingales are martingales.
+
+\noindent
+So for a fixed $f$, there exist $\varphi_1,\ldots,\varphi_n \in
+\FBEM{\Simplex}$ such that $f = f_{\varphi_1,\ldots,\varphi_n}$. We
+approximate $f$ with functions $f^j := f_{\varphi^j_1,\ldots,\varphi^j_n} \in \mathcal{F}$ where $\varphi^j_i(l) :=
+\varphi_i(l)\1_{\{l \leq j\}}$ with $j,l \in \N$. Hence, $f^j \xrightarrow{j\to\infty}
+f$ pointwise and similar to Lemma~\ref{da:l:f'}, 
+$$ \frac{\partial}{\partial x_k}f^j \xrightarrow{j\to\infty} \frac{\partial}{\partial x_k}f
+\quad \text{and} \quad
+\frac{\partial^2}{\partial x_k \partial x_l}f^j \xrightarrow{j\to\infty} 
+\frac{\partial^2}{\partial x_k \partial x_l}f, $$
+both again pointwise. 
+
+\noindent
+We now want to prove that also $\GAselFX{f^j}{\Vector{x}} \Conv \GAselFX{f}{\Vector{x}}$. Therefore, 
+observe that
+\begin{align*}
+\sup_j | \SProd{\varphi_i^j}{\Vector{x}} |
+ \leq \sum_{l=0}^\infty \sup_j | \varphi_i^j(l) | x_l 
+ \leq \sum_{l=0}^\infty | \varphi_i(l) | x_l 
+ \leq C \sum_{l=0}^\infty e^{\xi l} x_l 
+  < \infty
+\end{align*}
+for some $C,\xi >0$ and all $1 \leq i \leq n$, as $\varphi_i$ is exponentially bounded and
+$\Vector{x}$ has all exponential moments. Hence,
+\begin{align} \label{da:eq:expboundf'}
+\sup_j | \frac{\partial}{\partial x_k} f^j (\Vector{x})| 
+& \leq \sup_j | \sum_{i=1}^n \varphi_i^j(k)
+	f_{\varphi^j_1,\ldots,\widehat{\varphi^j_i},\ldots,\varphi^j_n}(\Vector{x}) | \\
+& \leq \sum_{i=1}^n | \varphi_i(k) | C_i 
+ \leq \sum_{i=1}^n \widetilde{C}_i e^{\xi_i k} 
+ \leq C e^{\xi k}
+\end{align}
+again for suitable $C,C_i,\widetilde{C}_i,\xi_i,\xi > 0$. Now
+\begin{align*}
+\sum_{k=0}^\infty \sup_j | \alpha \sum_{l=0}^\infty (l-k) x_l x_k \frac{\partial}{\partial x_k} f^j
+	(\Vector{x}) | 
+& \leq \sum_{k=0}^\infty x_k \, C
+e^{\xi k} \left| \left( \sum_{l=0}^\infty l x_l \right) - k \, \right| \\
+& \leq \sum_{k=0}^\infty x_k \, \widetilde{C} e^{\widetilde{\xi} k} < \infty,
+\end{align*} 
+and the convergence of $\GAselFX{f^j}{\Vector{x}}$ follows by dominated convergence.
+Analogously, 
+\begin{align*}
+\GAmutFX{f^j}{\Vector{x}} \xrightarrow{j \to \infty} \GAmutFX{f}{\Vector{x}}
+\quad \text{and} \quad
+\GAcompFX{f^j}{\Vector{x}} \xrightarrow{j \to \infty} \GAcompFX{f}{\Vector{x}}.
+\end{align*}
+Finally observe that analogous to \eqref{da:eq:expboundf'}, also
+\begin{align*}
+\sup_j | \frac{\partial^2}{\partial x_k \partial x_l} f_{\varphi_1^j,\ldots,\varphi_n^j}
+(\Vector{x}) | \leq C e^{\xi (k+l)}
+\end{align*}
+and therefore
+\begin{equation}
+\label{da:wq:Gresbounded}
+\begin{aligned}
+\sum_{k,l=0}^\infty \sup_j | x_k (\delta_{kl} - x_l) \frac{\partial^2}{\partial x_k \partial x_l}
+	f^j |
+& \leq C \sum_{k=0}^\infty x_k e^{\xi k} \sum_{l=0}^\infty | (\delta_{kl} - x_l) e^{\xi l} | \\
+& \leq \widetilde{C} \sum_{k=0}^\infty x_k e^{2 \xi k} < \infty.
+\end{aligned}
+\end{equation}
+
+\noindent
+This gives $\GAFX{f^j}{\Vector{x}} \to \GAFX{f}{\Vector{x}}$. Hence, $N^f$ is a martingale:
+\begin{align*}
+\CE{N^f \! (t)}{(X_r)_{r \leq s}} 
+&= \CE{\lim_{j \to \infty} N^{f^j}\!(t)}{(X_r)_{r \leq s}} \\
+&= \lim_{j \to \infty} \CE{ N^{f^j}\!(t)}{(X_r)_{r \leq s}} \\
+&= \lim_{j \to \infty} N^{f^j}\!(s) \\
+&= N^{f}\!(s)
+\end{align*}
+where we again use dominated convergence.
+
+\noindent
+3. $\Rightarrow$ 1.:
+Assume that $\Vector{X}$ is a solution of the SDE \eqref{da:eq:difdef}. We
+calculate the covariation process $([X_i,X_j]_t)_{t \geq 0}$ of
+$X_i$ and $X_j$ as
+\begin{align*}
+\left[ X_i, X_j \right] 
+&= \left[ \sum_{k \not = i} \sqrt{N^{-1} X_i X_k } \cdot W_{ki}, \sum_{l \not = j} \sqrt{N^{-1} X_j
+X_l } \cdot W_{lj} \right]\\
+&= \sum_{\substack{k \not = i\\l \not = j}} N^{-1} \sqrt{ X_i X_k X_j X_l } \cdot \left[ W_{ki},
+W_{lj} \right]\\ &=
+\begin{cases}
+N^{-1} (-1) X_i X_j \cdot \nu & \text{for } i \not = j \\
+N^{-1} X_i (1-X_i) \cdot \nu & \text{for } i = j \\
+\end{cases} \\
+&= N^{-1} X_i(\delta_{ij} -X_j) \cdot \nu \\
+\end{align*}
+Now as every $f \in \mathcal{F}$ only depends on finitely many
+coordinates, we can use It\^{o}'s formula, which yields 
+\begin{align*}
+df(\mrDifT{t}) 
+&= \sum_{i=0}^\infty f_i(\mrDifT{t})d\mrDifKT{i}{t}
+ + \sum_{i,j=0}^\infty \frac{1}{2} f_{ij}(\mrDifT{t}) d[\mrDifK{i},\mrDifK{j}]_t \\
+&= \sum_{i=0}^\infty f_i(\mrDifT{t}) 
+		\left(b_i(\mrDifT{t}) dt + \sum_{j \not= i} a_{ij}(\mrDifT{t}) dW_{ij}\right)\\
+& \qquad + \sum_{i,j=0}^\infty \frac{1}{2} f_{ij}(\mrDifT{t}) N^{-1} X_i (1-X_i) dt \\
+&= \sum_{i=0}^\infty f_i(\mrDifT{t}) \sum_{j \not= i} a_{ij}(\mrDifT{t}) dW_{ij} + G^\alpha
+f(\mrDifT{t})dt.
+\end{align*}
+with $a_{ij}(\Vector{x}) := \sqrt{\frac{1}{N} x_i x_j}$, $f_i :=
+\frac{\partial}{\partial x_i} f$ and $f_{ij} := \frac{\partial^2}{\partial x_i
+\partial x_j} f$. Hence,
+\begin{equation}
+\begin{aligned} \label{da:eq:dM^f}
+dN^f_t &= df(\mrDifT{t}) - G^\alpha f(\mrDifT{t}) \\
+	   &= \sum_{i=0}^\infty f_i(\mrDifT{t}) \sum_{j \not= i} a_{ij}(\mrDifT{t}) \,
+	   dW_{ij}.
+\end{aligned}
+\end{equation}
+Clearly every $a_{ij}(\mrDifT{t}) \, dW_{ij}$ is a martingale because
+$a_{ij}(\mrDifT{t})$ is bounded almost surely. The same is true for $\sum_{j \not= i} a_{ij}(\mrDifT{t}) dW_{ij}$, as we can
+again use dominated convergence because
+\begin{align*}
+&\E{\left(\sum_{j\not=i} \int_0^t \sqrt{\frac{1}{N} \mrDifKT{i}{t}
+\mrDifKT{j}{t}} \, dW_{ij}\right)^2\,} \\
+\leq \, &\E{\sum_{\substack{j\not=i,\\k\not=i}} 
+	\left|\int_0^t \sqrt{\frac{1}{N} \mrDifKT{i}{t} \mrDifKT{j}{t}} dW_{ij}\right|
+	\left|\int_0^t \sqrt{\frac{1}{N} \mrDifKT{i}{t} \mrDifKT{k}{t}} dW_{ik}\right|
+	}\\
+\leq \, &\sum_{\substack{j\not=i,\\k\not=i}} 
+	\E{\left(\int_0^t \sqrt{\frac{1}{N} \mrDifKT{i}{t} \mrDifKT{j}{t}} dW_{ij}\right)^2}
+	\E{\left(\int_0^t \sqrt{\frac{1}{N} \mrDifKT{i}{t} \mrDifKT{k}{t}} dW_{ik}\right)^2} \\
+= \, &\left( \sum_{j\not=i} \E{\int_0^t \frac{1}{N} \mrDifKT{i}{s} \mrDifKT{j}{s} ds} \right)^2 \\
+= \, &\left( \frac{1}{N} \Ex{\int_0^t \mrDifKT{i}{s} \left(1-\mrDifKT{i}{s}\right) ds} \right)^2 
+< \infty
+\end{align*}
+using the Cauchy-Schwarz inequality in the 2nd step and It\^{o}'s isometry in
+the 3rd one. This finishes the proof of 2. because the first sum in \eqref{da:eq:dM^f} is
+effectively finite.
+
+\noindent
+2. $\Rightarrow$ 3.:
+Let $\mr$ solve the $(\SimplexEM,\delta_{\Vector{x}},\GA,\overline{\mathcal{F}})$-martingale problem.  
+We have to construct Brownian motions $(W_{kl})_{k \leq l}$ on $\Simplex$ such that
+\eqref{da:eq:difdef} holds. To do so, we use Doob's 
+integral representation theorem (e.g. \citet[Theorem
+16.12]{kallenberg_foundations_1997}):
+
+\begin{Theorem*}
+Let $M$ be a continuous local $\mathscr{F}$-martingale in $\R^d$ with $M_0 = 0$
+such that the covariation of two coordinate processes $M_i$ and $M_j$ is 
+$$ [M_i,M_j]_t = \int_0^t \sum_{k=1}^d \sum_{l>k}^d V^i_{k,l}(s) V^j_{k,l}(s)
+\, ds \quad \text{a.s.} $$ for some $\mathscr{F}$-progressive processes
+$V_{k,l}^i$, $1 \leq i \leq d, 1 \leq k < l \leq d$. Then there exist some
+independent standard Brownian motions $(W_{kl})_{1 \leq k < l \leq d}$ with
+respect to a standard extension of $\mathscr{F}$ such that 
+$M_i = \sum_{k=1}^d \sum_{l>k}^d V_{k,l}^i \cdot W_{k,l}$.
+\end{Theorem*}
+
+\noindent First notice that we can reformulate the SDE \eqref{da:eq:difdef} to
+\begin{align} \label{da:eq:difNewDef} 
+d \mrDifKT{i}{t} = 
+	b_i(\mrDifT{t}) dt 
+  + \sum_{k=0}^\infty \sum_{l > k}  (\delta_{ik} - \delta_{il}) \sqrt{\frac{1}{N} \mrDifKT{k}{t}
+  \mrDifKT{l}{t} } \, dW_{kl}.
+\end{align}
+Analogously to the proof of Theorem 18.7 in \cite{kallenberg_foundations_1997}
+we can calculate that for
+\begin{align} \label{da:eq:defMi}
+M_i(t) = \mrDifKT{i}{t} + \mrDifKT{i}{0} - \int_0^t b_i(\mrDifKT{i}{s}) \, ds,
+\end{align}
+with $b_i$ as in \eqref{da:eq:difdef}, the quadratic covariation of $M_i$ and $M_j$ is
+\begin{align*}
+[M_i,M_j] = \frac{1}{N} \mrDifKT{i}{s} (\delta_{ij} - \mrDifKT{j}{s}) \cdot \nu.
+\end{align*}
+As Doob's theorem requires $\R^d$ as state space, we summarize all coordinates
+$(\mrDifK{i})$ with $i \geq R$ for fixed $R \in \N$ into a single process $\widetilde{X}_R :=
+1-\sum_{i=0}^{R-1} \mrDifK{i}$ and lift the Brownian motions to $\Simplex$ with a projective limit
+argument later. Furthermore, we define 
+$$ \widetilde{M}_R(t) 
+:=  \widetilde{X}_R(t) - \widetilde{X}_R(0) - \int_0^t b_i\left(
+\widetilde{X}_R(s) \right) ds = 1-\sum_{i=0}^{R-1} M_i(t) $$
+which clearly is a martingale as well. With the first line according to \eqref{da:eq:difNewDef}, we
+define $$ V_{k,l}^i := \begin{cases}
+(\delta_{ik} - \delta_{il}) \sqrt{\frac{1}{N} \mrDifK{k} \mrDifK{l}} 
+	& \text{ for } 1 \leq i < R, 0 \leq k < l < R, \\
+(\delta_{ik} - \delta_{iR}) \sqrt{\frac{1}{N} \mrDifK{k} \sum_{l \geq R} \mrDifK{l}} 
+	& \text{ for } 0 \leq i < R, 0 \leq k < R, l = R, \\
+0   & \text{ for } i = R, 0 \leq k < l < R, \\  
+- \sqrt{\frac{1}{N} \mrDifK{k} \sum_{l \geq R} \mrDifK{l}} 
+	& \text{ for } i = l = R, 0 \leq k < R. \\	
+\end{cases}$$
+Now, for $i \leq j < R$, we have
+\begin{align*}
+\sum_{k=0}^R & \sum_{l>k}^R V_{k,l}^i V_{k,l}^j
+= \sum_{k=0}^{R-1} \sum_{l>k}^{R-1} V_{k,l}^i V_{k,l}^j + \sum_{k=0}^{R-1} V_{k,R}^i V_{k,R}^j \\
+&= \delta_{ij} \left( \frac{1}{N} \mrDifK{i} \sum_{k=0}^{R-1} (1-\delta_{ik}) \mrDifK{k} \right)
+ + (1-\delta_{ij})(- \frac{1}{N} \mrDifK{i} \mrDifK{j})
+ + \delta_{ij} \left( \frac{1}{N} \mrDifK{i} \sum_{k \geq R} \mrDifK{k} \right) \\
+&= \frac{1}{N} \mrDifK{i} \left( \delta_{ij} - \mrDifK{j} \right)
+\end{align*} 
+and therefore
+\begin{align*}
+\sum_{k=0}^R \sum_{l>k}^R V_{k,l}^i V_{k,l}^j \cdot \nu
+= [M_i,M_j].
+\end{align*}
+For $i < j = R$ we get
+\begin{align*}
+\sum_{k=0}^R \sum_{l>k}^R V_{k,l}^i V_{k,l}^R \cdot \nu
+&= - \sum_{k=0}^{R-1} \delta_{ik} \frac{1}{N} \mrDifK{k} \sum_{l \geq k} \mrDifK{l}
+ \cdot \nu\\ 
+&= - \frac{1}{N} \mrDifK{i} \left(1-\sum_{l=0}^{R-1}\mrDifK{l}\right) \cdot \nu \\
+&= - \sum_{l=0}^{R-1}[M_i,M_l] = [M_i,1-\sum_{l=0}^{R-1} M_l] = [M_i,M_R]
+\end{align*}
+as $[M_i,1] = 0$. Finally, for $i = j = R$,
+\begin{align*}
+\sum_{k=0}^R \sum_{l>k}^R V_{k,l}^R V_{k,l}^R \cdot \nu
+&= \sum_{k=0}^{R-1} \frac{1}{N} \mrDifK{k} \left( 1 - \sum_{l=0}^{R-1} \mrDifK{l} \right) \cdot\nu\\ 
+&= \sum_{k=0}^{R-1} \sum_{l=0}^{R-1} \frac{1}{N} \mrDifK{k} \left( \delta_{kl} - \mrDifK{l} \right)
+	\cdot \nu \\   
+&= \sum_{k,l=0}^{R-1} [M_i,M_l] = [1-\sum_{k=0}^{R-1} M_k,1-\sum_{l=0}^{R-1} M_l] = [M_R,M_R].
+\end{align*}
+Hence, we can apply the representation theorem, and get independent standard Brownian motions
+$(W_{kl})_{0 \leq k < l \leq R}$ such that 
+\[ M_i = \sum_{k=0}^{R} \sum_{l>k}^{R} V_{k,l}^i \cdot W_{k,l} \]
+for $i \leq R$. Now, assume we have constructed two arrays of standard Brownian
+motions $(W_{kl})_{0 \leq k < l \leq R}$ and $(\widetilde{W}_{kl})_{0 \leq k < l \leq \widetilde{R}}$ by the above
+construction for $R$ and $\widetilde{R}$ with $R < \widetilde{R}$. As the Brownian motions are
+independent within an array, we get
+$$ [W_{k,l},W_{m,n}]_t = \delta_{km} \delta_{ln} t = [\widetilde{W}_{k,l},\widetilde{W}_{m,n}]_t $$
+for $k,l,m,n < R$. As a consequence of Lévy's characterization of the Brownian motion, 
+$(W_{kl})_{0 \leq k < l < R}$ and $(\widetilde{W}_{kl})_{0 \leq k < l < R}$ are equal in
+distribution. Hence, their projective limit for $R \to \infty$ exists in form of independent
+standard Brownian motions $(W_{kl})_{0 \leq k < l < \infty}$ with
+$$ M_i = \sum_{k=0}^{\infty} \sum_{l>k}^{\infty} V_{k,l}^i \cdot W_{k,l}. $$
+Substituting this into \eqref{da:eq:defMi} finishes the proof.
+\end{proof}
+
+
+\subsection{Existence And Uniqueness Of A Solution}
+
+Now with Theorem~\ref{da:t:SDE=MP} at hand, we can prove that SDE~\eqref{da:eq:difdef} is well-posed
+by verifying the same for the martingale problem. Here, a corresponding result
+is known for bounded generators (\cite{hennequin_measure-valued_1993}). However, for Muller's ratchet $\GAsel$ is not
+bounded for $\alpha > 0$. We therefore use a Girsanov theorem to reduce the general system to this
+case. First, we state the well-posedness of the SDE as the main result we want to prove in this
+section.
+
+\begin{Theorem}[Well-posedness of the SDE]
+\label{da:t:eau}
+Let  $\mathbf{P}_0 \in \mathcal{P}(\SimplexEM)$ and $\mrDifT{0} \sim \mathbf{P}_0$ with
+$\mathbf{E}_{\mathbf{P}_0}\left[ h_\xi(\mrDifT{0}) \right] < \infty$ for all $\xi >0$. 
+Then, for $N\in (0,\infty)$ and $\alpha,\lambda,\gamma\in [0,\infty)$, the
+system~\eqref{da:eq:difdef} starting in $\mrDifT{0}$ has a unique weak solution $\mrDif = (\mrDifT{t})_{t\geq 0}$ in the space
+$\mathcal C_{\SimplexEM}([0,\infty))$ of continuous functions on $\SimplexEM$. We refer to the
+process $\mrDif$ as \emph{diffusion approximation of Muller's ratchet} (with
+compensatory mutations) with selection coefficient $\alpha$, mutation rate
+$\lambda$, compensatory mutation rate $\gamma$ and population size $N$.
+\end{Theorem}
+
+\noindent 
+In terms of martingale problems, this theorem translates to the following proposition.
+
+\begin{Proposition}[Well-posedness of the martingale problem]
+\label{da:p:mp-wp}
+Let $\mrDifT{0}$ and $\mathbf{P}_0$ be as in Theorem~\ref{da:t:eau}, $\GA$ as in
+Definition~\ref{da:d:D&G-MP}, $\alpha, \lambda, \gamma\in [0,\infty)$, $N\in (0,\infty)$ and
+$\overline{\mathcal F}$ be as in Definition~\ref{pre:d:F}. Then, the $(\mathbb S^\circ,\mathbf P_0,
+G_{\mathcal X}^\alpha, \overline{\mathcal F})$-martingale problem is well-posed and has continuous
+paths on $\SimplexEM$. Its solution is equal in distribution to the diffusion approximation of
+Muller's ratchet with compensatory mutations.
+\end{Proposition}
+
+\noindent
+For the proof of Proposition~\ref{da:p:mp-wp}, we need two well-known results from the theory of
+semimartingales. Briefly recall that a sequence of stopping times $(\tau_n)_{n \in \N}$ is said
+to be a \emph{localizing sequence} if $\tau_n \nearrow \infty$ almost
+surely. An adapted process $M$ is said to be a \emph{local martingale} if there
+exists a localizing sequence such that the stopped process $M^{\tau_n}$ is a
+martingale for every $n$. Obviously, every martingale is a local martingale,
+while the reversal is not true in general, but under the following condition.
+
+\begin{Lemma} \label{da:l:lm}
+Let $\mathcal N = (N_t)_{t\geq 0}$ be a local martingale. If
+$\mathbf E[\sup_{0\leq t\leq T}N_t]<\infty$ for all $T>0$, then
+$\mathcal N$ is a martingale.
+\end{Lemma}
+\begin{proof} 
+See e.g.\ \citet{protter_stochastic_2005}, Theorem~I.51.
+\end{proof}
+
+\noindent
+The second result is a Girsanov type theorem. It is the key step in the proof of
+Proposition~\ref{da:p:mp-wp}, as it will allow us the reduce the martingale problem to the case
+without selection, where the generator is bounded.
+
+\begin{Theorem}[Girsanov Theorem for continuous semimartingales] \label{da:t:grisanov}
+If $\mathcal L=(L_t)_{t\geq 0}$ is a continuous $\mathbf P$-martingale for some probability measure
+$\mathbf P$, then $\mathcal Z = (Z_t)_{t\geq 0}$, given by 
+$Z_t = e^{L_t - \tfrac 12 [\mathcal{L}]_t}$, is a continuous local martingale. 
+
+\noindent
+If $\mathcal Z$ is a martingale as well, $\mathcal N = (N_t)_{t\geq 0}$ is a $\mathbf P$-local
+martingale and $\mathbf Q$ is defined via
+$$ \frac{d\mathbf Q}{d\mathbf P}\Big|_{\mathcal F_t} = Z_t,$$
+then $\mathcal N - [\mathcal L, \mathcal N]$ is a $\mathbf Q$-local martingale. 
+\end{Theorem}
+\begin{proof} 
+See e.g. \citet{kallenberg_foundations_1997}, Theorem~16.19 and Lemma~16.21.
+\end{proof}
+
+\noindent
+Combining Lemma~\ref{da:l:lm} and the Girsanov theorem, we can show now that a
+solution of the martingale problem for selection coefficient $\alpha$ is also a
+solution for the one with selection coefficient $\alpha' > \alpha$ on a modified
+probability space.
+
+\begin{Proposition}[Change of measure] \label{da:p:com}
+For  $\Vector{x} \in \Simplex$, we denote with
+\begin{align}\label{da:eq:kappa12}
+\kappa_1(\Vector{x}) := \sum_{k=0}^\infty k x_k \quad \text{and} \quad
+\kappa_2(\Vector{x}) := \sum_{k=0}^\infty (k - \kappa_1(\underline x))^2 x_k
+\end{align}
+the expectation and variance of $\Vector{x}$. 
+Now let $\Vector{x} \in \SimplexEM$ and $\mrDif = (\mrDifT{t})_{t\geq 0}$ be a solution of the
+$(\SimplexEM, \delta_{\underline x}, \GA, \overline{\mathcal{F}})$-martingale problem and denote its
+distribution by $\mathbf{P}^\alpha$. Then, the process $\mathcal Z^{\alpha,\alpha'} =
+(Z^{\alpha,\alpha'}_t)_{t\geq 0}$, given by
+\begin{equation}
+\begin{aligned}\label{da:eq:Zt}
+Z^{\alpha,\alpha'}_t = \exp \! \Big( N(\alpha - \alpha')
+\Big(&\kappa_1(\underline X(t)) - \kappa_1(\underline X(0)) \\
+& %\qquad \qquad \qquad \qquad \qquad \qquad
+- \int_0^t \lambda - \gamma \kappa_1(\underline X(s)) - \frac{\alpha + \alpha'}{2}
+\kappa_2(\underline X(s)) \, ds \Big)\!\Big)
+\end{aligned}
+\end{equation}
+is a $\mathbf P^\alpha$-local martingale. If $\alpha'>\alpha$, it is even a $\mathbf
+P^\alpha$-martingale and the probability measure $\mathbf P^{\alpha'}$, defined by
+$$ \frac{d \mathbf P^{\alpha'}}{d \mathbf P^\alpha}\Big|_{\mathcal F_t} = Z^{\alpha,\alpha'}_t,$$
+solves the $(\SimplexEM, \delta_{\underline x}, G^{\alpha'}, \overline{\mathcal F}))$-martingale problem.
+\end{Proposition}
+
+\begin{Remark}
+The quantities $\kappa_1(\Vector{x})$ and $\kappa_2(\Vector{x})$ are called the
+first and second cumulant of $\Vector{x}$. Cumulants have proven to be useful
+for Muller's ratchet. We will take a closer look at them in Section~\ref{ode:sec:cumulants}.
+\end{Remark}
+
+\noindent
+\begin{proof}[Proof of Proposition~\ref{da:p:com}]
+We know from Theorem~\ref{da:t:SDE=MP} that $\mrDif$ satisfies the assumptions of
+Lemma~\ref{da:l:expBounds}.  The proof is an application of the Theorem~\eqref{da:t:grisanov}. 
+By assumption and Lemma~\ref{pre:l:conti} and Lemma~\ref{pre:l:conti_paths}, the processes $\mrDif$ and
+$f(\mrDif)$ are continuous for all $f\in\overline{\mathcal F}$.
+Let again $\mathcal N^f = (N^f_t)_{t\geq0}$ be
+$$ N^f_t := f(\underline X(t)) - f(\underline X(0)) - \int_0^t G_{\mathcal X}^\alpha f(\underline
+X(s))ds.$$ Now for
+$$ g(\Vector{x}):= N(\alpha - \alpha')\kappa_1(\Vector{x}) \in \overline{\mathcal{F}} $$ 
+we know that $\mathcal L = (L_t)_{t\geq 0}$, defined by
+\begin{align*}
+L_t &:= N^g_t 
+= N(\alpha - \alpha') \Big(\kappa_1(\mrDifT{t}) - \kappa_1(\mrDifT{0}) - \int_0^t \GA
+    \kappa_1(\mrDifT{s}) ds \Big)  
+%&= 2N(\alpha - \alpha') \Big(\kappa_1(\mrDifT{t}) - \kappa_1(\mrDifT{0})-
+%    \int_0^t \lambda - \alpha \kappa_2(\mrDifT{s}) - \gamma \kappa_1(\mrDifT{s}) ds\Big).
+\end{align*}
+is a $\mathbf{P}^\alpha$-(local) martingale. As
+\begin{align*}
+\GAselFX{\kappa_1}{\Vector{x}}
+&= \alpha \sum_{k=0}^\infty (\kappa_1(\Vector{x}) - k) x_k k 
+= \alpha \left( \kappa_1^2(\Vector{x}) - \sum_{k=0}^\infty k^2 x_k \right) 
+= -\alpha \kappa_2(\Vector{x}), \\
+\GAmutFX{\kappa_1}{\Vector{x}}
+&= \lambda \sum_{k=0}^\infty ( x_{k-1} - x_k ) k 
+= \lambda \sum_{k=0}^\infty (k+1) x_k - k x_k
+= \lambda, \\
+\GAcompFX{\kappa_1}{\Vector{x}}
+&= \gamma \sum_{k=0}^\infty \left( (k+1)x_{k+1} - k x_k \right) k
+= \gamma \sum_{k=0}^\infty (k-1) k x_k - k^2 x_k
+= - \gamma \kappa_1(\Vector{x}),
+\end{align*}
+$\GNresFX{\kappa_1}{\Vector{x}} = 0$ and 
+\begin{align*}
+\GNresFX{\kappa_1^2}{\Vector{x}} 
+= \frac{1}{2N} \sum_{l,k=0}^\infty x_k (\delta_{kl}-x_l) 2 k l
+= \frac{1}{N} \sum_{k=0}^\infty x_k (k^2-k \kappa_1(\Vector{x}))
+= \frac{1}{N} \kappa_2(\Vector{x}),
+\end{align*}
+we have
+\begin{align*}
+[\mathcal{L}]_t 
+= N^2(\alpha-\alpha')^2 \int_0^t \GNresFX{\kappa_1^2}{\mrDifT{s}} ds 
+= N(\alpha-\alpha')^2 \int_0^t \kappa_2(\mrDifT{s}) ds
+\end{align*}
+and
+\begin{align*}
+&\exp\! \left( L_t - \frac{1}{2}[\mathcal{L}]_t \right) \\
+&\, = \exp \! \Big( N (\alpha - \alpha') \Big(\kappa_1(\mrDifT{t}) - \kappa_1(\mrDifT{0})
+		 		- \int_0^t \lambda - \gamma \kappa_1(\mrDifT{s}) - \frac{\alpha + \alpha'}{2}
+		 		\kappa_2(\mrDifT{s}) ds \Big)\!\Big) \\
+&\, = Z^{\alpha,\alpha'}_t
+\end{align*}
+is a local $\mathbf{P}^\alpha$-martingale by Theorem~\ref{da:t:grisanov}. Now, if 
+$\alpha<\alpha'$ and $\mrDifT{0}$ has all exponential moments, we have that $\mathbf
+E[\sup_{0\leq t\leq T} Z^{\alpha,\alpha'}_t]<\infty$ since $e^{\xi \kappa_1(\underline X(t))} \leq
+h_\xi(\underline X(t))$ by Jensen's inequality for all $\xi$. Hence, $\mathcal Z^{\alpha, \alpha'}$
+even is a $\mathbf P^\alpha$-martingale by Lemma~\ref{da:l:lm}.
+
+\noindent
+Now let $f \in \mathcal{\overline F}$. By assumption, $N^f$ is a $\mathbf{P}^\alpha$-martingale. 
+We calculate
+\begin{align*}
+[\mathcal L, \mathcal N^f]_t 
+& = \int_0^t \GNresFX{gf}{\mrDifT{s}} - g(\mrDifT{s}) \GNresFX{f}{\mrDifT{s}} ds \\ 
+& = \frac{(\alpha-\alpha')}{2} \int_0^t \sum_{k,l=0}^\infty X_k(s)(\delta_{kl} -
+    X_l(s)) 
+    \left( l \frac{\partial}{ \partial x_k} f + k \frac{\partial}{ \partial x_l} f \right)
+    ds \\ 
+& = \frac{(\alpha-\alpha')}{2} \int_0^t 
+ 	\Big( 
+ 		\sum_{k=0}^\infty \mrDifKT{k}{s} \big(k - \kappa_1(\mrDifT{s})\big)
+     	\frac{\partial}{\partial x_k} f(\mrDifT{s}) \\
+&\qquad \qquad \qquad \qquad \qquad \qquad + 
+     	\sum_{l=0}^\infty \mrDifKT{l}{s} \big(l - \kappa_1(\mrDifT{s})\big)
+     	\frac{\partial}{\partial x_l} f(\mrDifT{s}) \Big) 
+     ds \\
+& = \int_0^t \Gsel{\alpha'}f(\mrDifT{s}) - \Gsel{\alpha}f(\mrDifT{s}) ds.
+\end{align*}
+
+\noindent
+Therefore the Girsanov theorem for continuous semimartingales shows that
+\begin{align*}
+N_t^f - \left[ \mathcal{L}, \mathcal{N}^f \right]_t 
+= f(\mrDifT{t}) - \int_0^t G^{\alpha'} f(\mrDifT{s}) ds
+\end{align*}
+is a $\mathbf P^{\alpha'}$-martingale. Hence, $\mathbf P^{\alpha'}$ solves
+the $(\mathbb S^\circ, \mathbf P_0, G_{\mathcal X}^{\alpha'},\overline{\mathcal F})$-martingale problem.
+\end{proof}
+
+\noindent
+Using this result, we can now prove the well-posedness of the stochastic
+differential equation \eqref{da:eq:difdef}.
+
+\begin{proof}[Proof of Theorem~\ref{da:t:eau}]
+The assertions of Theorem~\ref{da:t:eau} and Pro\-position~\ref{da:p:mp-wp} are
+equivalent, as can be seen from Theorem~\ref{da:t:SDE=MP}. So, it
+suffices to show Proposition~\ref{da:p:mp-wp}. Moreover, it is enough to
+consider the case $\mathbf P_0 = \delta_{\underline x}$ for
+$\underline x\in \SimplexEM$.
+
+For $\alpha=0$, it can be seen from classical theory
+(e.g.~\citealp[Theorem 5.4.1]{hennequin_measure-valued_1993}) that the 
+$(\mathbb S,\delta_{\underline x}, G^0, {\mathcal F})$-martingale
+problem has a unique weak solution. Thus, by Theorem~\ref{da:t:SDE=MP}, the 
+$(\mathbb S,\delta_{\underline x}, G^0, \overline {\mathcal F})$-martingale 
+problem is well-posed as well. Denote the unique distribution which solves 
+the martingale problem by $\mathbf P^0$. Hence, by Proposition~\ref{da:p:com}, 
+there is a change of measure using $\mathcal Z^{0,\alpha}$ from $\mathbf P^0$ 
+to $\mathbf P^\alpha$ and $\mathbf P^\alpha$ solves the $(\mathbb S^\circ, \mathbf P_0, \GA,
+\overline{\mathcal F})$-martingale problem. This establishes the existence.
+
+For uniqueness, recall that the solution of the 
+$(\mathbb S,\delta_{\underline x}, G^0, {\mathcal F})$-martingale
+problem is unique. We proceed by contradiction and assume that
+$\mathbf P_1^\alpha$ and $\mathbf P_2^\alpha$ are two different
+solutions of the $(\SimplexEM, \delta_{\underline x},\GA, \overline{\mathcal F})$-martingale
+problem. Let $\tau_1, \tau_2,...$ be a localizing sequence such that
+$(Z^{\alpha,0}_{t\wedge \tau_n})_{t\geq 0}$, given by~\eqref{da:eq:Zt}, is both a 
+$\mathbf P_1^\alpha$-martingale and a $\mathbf P_2^\alpha$-martingale. Since
+$\mathbf P_1^\alpha \neq \mathbf P_2^\alpha$, there must be $t\geq 0$ such that the distribution of
+$\underline X(t)$ under $\mathbf P_1^\alpha$ and $\mathbf P_2^\alpha$ is different (see Theorem 4.4.2
+in \cite{ethier_markov_2005}). Hence, there is $f\in{\mathcal F}$
+and $n\in\N$ such that $\mathbf E_{\mathbf P_1^\alpha}[f(\mrDifT{t\wedge \tau_n})] \neq \mathbf
+E_{\mathbf P_2^\alpha}[f(\mrDifT{t\wedge \tau_n})]$ as well as
+  \begin{align}
+    \label{da:eq:unequal}
+    \mathbf E_{\mathbf P_1^\alpha}[Z_{t\wedge
+      \tau_n}^{\alpha,0}f(\mrDifT{t\wedge \tau_n})] \neq \mathbf
+    E_{\mathbf P_2^\alpha}[Z_{t\wedge \tau_n}^{\alpha,0}f(\mrDifT{t\wedge \tau_n})].
+  \end{align}
+  However, by the same arguments as in the proof of
+  Proposition~\ref{da:p:com}, $Z_{t\wedge \tau_n}^{\alpha,0} \cdot \mathbf
+  P_1^\alpha$ as well as $Z_{t\wedge \tau_n}^{\alpha,0} \cdot \mathbf
+  P_2^\alpha$ equal $\mathbf P^0$ on the $\sigma$-algebra
+  $\sigma((\mrDifT{s})_{0\leq s\leq t\wedge \tau_n})$. Hence,
+  $$\mathbf E_{\mathbf P_1^\alpha}[Z_{t\wedge
+    \tau_n}^{\alpha,0}f(\mrDifT{t\wedge \tau_n})] = \mathbf
+  E_{\mathbf P^0}[f(\mrDifT{t\wedge \tau_n})] = \mathbf
+  E_{\mathbf P_2^\alpha}[Z_{t\wedge \tau_n}^{\alpha,0}f(\mrDifT{t\wedge \tau_n})],$$ in contradiction
+  to~\eqref{da:eq:unequal}. Uniqueness of the $(\mathbb S^\circ, \mathbf
+  P_0, G_{\mathcal X}, \overline{\mathcal F})$-martingale problem
+  follows.
+\end{proof}
